@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+from pathlib import Path
+
 import pytest
 
 from ppsql import Context, Line
@@ -9,7 +11,7 @@ from ppsql import Context, Line
 
 @pytest.fixture
 def ctx():
-    return Context(file_path="/tmp/example.sql", content="first\nsecond\nthird")
+    return Context(file_path=Path("/tmp/example.sql"), content="first\nsecond\nthird")
 
 
 def test_content_joins_non_empty_lines(ctx):
@@ -42,7 +44,7 @@ def test_iteration(ctx):
 
 
 def test_a_trailing_newline_produces_an_empty_line():
-    ctx = Context(file_path="/tmp/example.sql", content="first\n")
+    ctx = Context(file_path=Path("/tmp/example.sql"), content="first\n")
     assert [line.content for line in ctx.walk()] == ["first", ""]
 
 
@@ -79,7 +81,7 @@ def test_a_line_is_a_string(ctx):
 
 
 def test_variables_of_a_context_are_isolated():
-    first = Context(file_path="/tmp/first.sql", content="", variables={"key": "1"})
-    second = Context(file_path="/tmp/second.sql", content="")
+    first = Context(file_path=Path("/tmp/first.sql"), content="", variables={"key": "1"})
+    second = Context(file_path=Path("/tmp/second.sql"), content="")
     assert first.variables.get("key") == "1"
     assert second.variables.get("key") is None

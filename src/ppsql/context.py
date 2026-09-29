@@ -4,6 +4,7 @@
 
 import os
 from collections.abc import Generator
+from pathlib import Path
 
 from .logger import Logger
 from .scope import VariableScope
@@ -39,7 +40,7 @@ class Line:
         self.__content = content
 
     @property
-    def file(self) -> str:
+    def file(self) -> Path:
         """Getter of a file"""
         return self.__ctx.file_path
 
@@ -52,7 +53,7 @@ class Context(Logger):
     def __init__(
         self,
         *,
-        file_path: str,
+        file_path: Path,
         content: str,
         variables: dict[str, str] | None = None,
     ):
@@ -80,7 +81,7 @@ class Context(Logger):
         return os.path.basename(self.__file_path)
 
     @property
-    def file_path(self) -> str:
+    def file_path(self) -> Path:
         """this getter returns file path"""
         return self.__file_path
 

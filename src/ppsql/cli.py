@@ -148,6 +148,6 @@ def main(argv: list[str] | None = None) -> None:
     args = CLIArgumentsReader(argv).arguments
     load_env(args.env)
     load_password([args.credential, __cwd__, __home__])
-    builder = Builder(entry=args.input)
+    builder = Builder(entrypoint=args.input)
     writer = Writer(args.out)
     writer(builder.build())

@@ -50,7 +50,6 @@ class Logger:
         logger = Logger(name, parent=parent).logger
 
         def wrapper(callee: Callable[[Any], Any]) -> Callable[[Any], Any]:
-
             def decorator(*args, **kwargs) -> Any:
                 try:
                     logger.debug(f"call `{callee}` with args: {args} and kwargs: {kwargs}")

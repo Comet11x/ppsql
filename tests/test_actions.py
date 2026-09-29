@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+from pathlib import Path
+
 import pytest
 
 from ppsql import Context, StatementParser
@@ -9,7 +11,7 @@ from ppsql import Context, StatementParser
 
 @pytest.fixture
 def ctx():
-    return Context(file_path="/tmp/example.sql", content="")
+    return Context(file_path=Path("/tmp/example.sql"), content="")
 
 
 def line(ctx, content):

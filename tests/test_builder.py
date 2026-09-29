@@ -2,13 +2,15 @@
 #
 # SPDX-License-Identifier: MIT
 
+from pathlib import Path
+
 import pytest
 
 from ppsql import Builder, VariableScope
 
 
 def build(entry, variables=None):
-    return Builder(entry=entry, variables=variables).build()
+    return Builder(entrypoint=entry, variables=variables).build()
 
 
 def test_plain_sql_is_untouched(sql_project):
@@ -87,7 +89,7 @@ def test_a_recursive_include_stops_the_build(sql_project):
 def test_an_entry_point_is_registered(sql_project):
     entry = sql_project("main.sql", "select 1;\n")
     build(entry)
-    assert entry in Builder.files
+    assert Path(entry) in Builder.files
 
 
 def test_a_missing_file_stops_the_build():

@@ -4,6 +4,7 @@
 
 import os
 import sys
+from pathlib import Path
 from typing import Any
 
 from .actions import (
@@ -22,7 +23,9 @@ from .logger import Logger
 class Builder(Logger):
     """Builder preprocesses an entry file and returns its content"""
 
-    files: set[str] = set()
+    files: set[str | Path] = set()
+
+    INDEX_FILE = "index.sql"
 
     translators: list[Action] = [
         CommentLineAction(),
@@ -35,21 +38,30 @@ class Builder(Logger):
     def __init__(
         self,
         *,
-        entry: str,
+        entrypoint: str | Path,
         variables: dict[str, Any] | None = None,
     ):
-        entry = os.path.abspath(os.path.normpath(entry))
-        Logger.__init__(self, f"builder:{entry}")
-        if entry in Builder.files:
-            self.logger.critical(f"recursive include file: {entry}")
+        entrypoint = Builder.__normile_path(entrypoint)
+        Logger.__init__(self, f"builder:{entrypoint}")
+
+        if entrypoint in Builder.files:
+            self.logger.critical(f"recursive include file: {entrypoint}")
             sys.exit(1)
         else:
-            Builder.files.add(os.path.abspath(entry))
-        self.__entry = entry
+            Builder.files.add(entrypoint)
+        self.__entrypoint = entrypoint
         self.__variables = variables if isinstance(variables, dict) else {}
 
+    @staticmethod
+    def __normile_path(path: Path | str) -> Path:
+        entrypoint = Path(os.path.normpath(path)).absolute()
+        if entrypoint.is_dir() and Builder.INDEX_FILE in os.listdir(entrypoint):
+            entrypoint = entrypoint / Builder.INDEX_FILE
+
+        return entrypoint
+
     def __make_context(self) -> Context:
-        loader = Loader(self.__entry)
+        loader = Loader(self.__entrypoint)
         ctx = loader()
         ctx.variables.update(self.__variables)
         return ctx

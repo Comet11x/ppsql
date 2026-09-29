@@ -78,5 +78,5 @@ class IncludeFileAction(BaseAction):
                 if "index.sql" in files:
                     file_path = f"{file_path}/index.sql"
 
-            builder = Builder(entry=file_path, variables=ctx.variables)
+            builder = Builder(entrypoint=file_path, variables=ctx.variables)
             line.content = builder.build()
